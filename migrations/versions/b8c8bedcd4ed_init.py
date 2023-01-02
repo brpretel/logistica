@@ -1,8 +1,8 @@
-"""cambio en fecha de creacion a modificacion
+"""INIT
 
-Revision ID: 7de2b027e344
-Revises: c001b4dbd621
-Create Date: 2022-12-31 15:32:00.252307
+Revision ID: b8c8bedcd4ed
+Revises: 
+Create Date: 2023-01-02 17:10:38.977201
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision = '7de2b027e344'
-down_revision = 'c001b4dbd621'
+revision = 'b8c8bedcd4ed'
+down_revision = None
 branch_labels = None
 depends_on = None
 
