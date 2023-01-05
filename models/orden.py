@@ -1,6 +1,5 @@
 import sqlalchemy
 
-
 from models.enums import ProductType, ProductMeasurement, ProductStatus
 from db import metadata
 

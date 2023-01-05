@@ -1,9 +1,6 @@
 import sqlalchemy
-from sqlalchemy import DDL
-
 from models.enums import ProductType, ProductMeasurement, ProductStatus
 from db import metadata
-
 
 log_cambio_orden = sqlalchemy.Table(
     "log_ordenes",
