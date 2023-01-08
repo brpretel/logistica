@@ -4,11 +4,11 @@ from fastapi import APIRouter, Depends
 from starlette.requests import Request
 
 from managers.auth import oauth2_scheme
-from managers.orden import OrderManager
-from schemas.request.orden import OrderModel
-from schemas.response.orden import OrderOut
+from managers.disponibilidad import DisponibilidadManager
+from schemas.request.disponibilidad import DisponibilidadModel
+from schemas.response.disponibilidad import DisponibilidadOut
 
-router = APIRouter(tags=["Ordenes"])
+router = APIRouter(tags=["Disponibilidad"])
 
 
 @router.get("/ordenes/", dependencies=[Depends(oauth2_scheme)], response_model=List[OrderOut])

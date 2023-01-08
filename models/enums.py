@@ -1,20 +1,9 @@
 from enum import Enum
 
 
-class ProductType(str, Enum):
-    chives = "chives"
-    oregano = "oregano"
-    basil = "basil"
-    tarragon = "tarragon"
-    corriander = "corriander"
-    dill = "dill"
-    marjoram = "marjoram"
-    mint = "mint"
-    baileaf = "baileaf"
-    rosemary = "rosemary"
-    thyme = "thyme"
-    thai_basil = "thay basil"
-    parsley = "parsley"
+class ProductCategory(str, Enum):
+    organico = "organico"
+    inorganico = "inorganico"
 
 
 class ProductMeasurement(str, Enum):
@@ -39,5 +28,14 @@ class UserStatus(str, Enum):
 
 class RoleType(str, Enum):
     master = "master"
-    admin = "admin"
     distribuidor = "distribuidor"
+
+
+class Dias_de_disponibilidad(str, Enum):
+    Lunes = "Lunes"
+    Martes = "Martes"
+    Miercoles = "Miercoles"
+    Jueves = "Jueves"
+    Viernes = "Viernes"
+    Sabado = "Sabado"
+    Domingo = "Domingo"

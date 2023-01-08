@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from resources import auth, orden
+from resources import auth, disponibilidad
 
 api_router = APIRouter()
 api_router.include_router(auth.router)
