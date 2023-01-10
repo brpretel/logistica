@@ -2,6 +2,9 @@ import sqlalchemy
 
 from db import metadata
 
+"""
+disp_usuario_productos: Se encarga de relacionar los productos que maneja cada usuario
+"""
 disp_usuario_producto = sqlalchemy.Table(
     "disp_usuario_productos",
     metadata,

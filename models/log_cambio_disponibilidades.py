@@ -2,8 +2,12 @@ import sqlalchemy
 from models.enums import ProductMeasurement, ProductStatus
 from db import metadata
 
-log_cambio_orden = sqlalchemy.Table(
-    "log_ordenes",
+
+"""
+log_disponibilidades: Almacena el historia de todos los cambios al hacer update de una disponibilidad
+"""
+log_cambio_disponibilidades = sqlalchemy.Table(
+    "log_disponibilidades",
     metadata,
     sqlalchemy.Column("producto", sqlalchemy.String(60), nullable=False),
     sqlalchemy.Column("categoria", sqlalchemy.String(60), nullable=False),

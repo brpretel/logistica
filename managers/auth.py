@@ -13,6 +13,9 @@ from models import RoleType, usuario
 
 
 class AuthManager:
+    """
+    Encode: Esta funcion codifica el token con una fecha de expiracion y el ID del usuario
+    """
     @staticmethod
     def encode_token(user):
         try:
@@ -43,14 +46,22 @@ class CustomHHTPBearer(HTTPBearer):
             raise HTTPException(401, "El Token es invalido")
 
 
+"""
+Instancia de la Clase CustomHHTPBearer()
+"""
 oauth2_scheme = CustomHHTPBearer()
 
-
+"""
+Funcion encargara de revisar si el (role) del usuario es master
+"""
 def is_master(request: Request):
     if not request.state.user["role"] == RoleType.master:
         raise HTTPException(403, "prohibido")
 
 
+"""
+Funcion encargara de revisar si el (role) del usuario es distribuidor
+"""
 def is_distribuidor(request: Request):
     if not request.state.user["role"] == RoleType.distribuidor:
         raise HTTPException(403, "Forbidden")

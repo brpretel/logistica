@@ -14,3 +14,10 @@ class DisponibilidadModel(BaseModel):
     fecha_de_modificacion: date = Field(...)
     fecha_de_disponibilidad: date = Field(...)
     dia_de_disponibilidad: Dias_de_disponibilidad = Field(...)
+
+
+class DisponibilidadUpdateModel(BaseModel):
+    #modificador_id: int
+    cantidad: float
+    status: str
+

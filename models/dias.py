@@ -2,6 +2,10 @@ import sqlalchemy
 
 from db import metadata
 
+"""
+dias: Contiene los dias de la semana que seran usados para asignar dias de publicacion de disponibilidades
+    para los distribuidores
+"""
 dias = sqlalchemy.Table(
     "dias",
     metadata,

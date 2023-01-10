@@ -12,3 +12,7 @@ class UserLoginIn(UserBase):
 class UserRegisterIn(UserBase):
     password: str
     role: str
+
+
+class UserRegisterMaster(UserBase):
+    password:str

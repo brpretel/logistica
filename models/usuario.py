@@ -3,6 +3,9 @@ import sqlalchemy
 from models.enums import RoleType, UserStatus
 from db import metadata
 
+"""
+usuarios: Almacena a todos los usuarios del programa
+"""
 usuario = sqlalchemy.Table(
     "usuarios",
     metadata,

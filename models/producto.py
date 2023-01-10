@@ -3,6 +3,10 @@ import sqlalchemy
 from db import metadata
 from models.enums import ProductCategory
 
+
+"""
+productos: Almacena los productos con categoria disponibles
+"""
 producto = sqlalchemy.Table(
     "productos",
     metadata,
