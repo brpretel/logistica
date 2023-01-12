@@ -15,15 +15,24 @@
     <div class="login">
         <div class="form-container">
             <img src="/front/static/img/RECURSO-WEB_Mesa-de-trabajo-1.png" alt="logo" class="logo">
+            {%if msg %}
+            <div class="alert alert-success" role="alert">
+                {{msg}}
+            </div>
+            {%else%}
+            <div class="alert alert-danger" role="alert">
+                {{msg}}
+            </div>
+            {%endif%}
 
-            <form method="" class="">
-                <label for="email" class="label">Usuario</label>
-                <input type="text" id="email" placeholder="user_id" class="input input-password">
+            <form method="POST" action="/auth">
+                <label class="label">Usuario</label>
+                <input type="text" name="user_id" placeholder="user_id" class="input input-password">
 
-                <label for="password" class="label">Contraseña</label>
-                <input type="password" id="password" placeholder="*********" class="input input-password">
+                <label class="label">Contraseña</label>
+                <input type="password" name="password" placeholder="*********" class="input input-password">
 
-                <input type="submit" value="Login" class="primary-button login-buton">
+                <button type="submit" class="primary-button login-buton" >Login</button>
 
                 <a href="https://walink.co/7e3206">Contacte con el Master, para actualizar los datos de Registro.</a>
             </form>

@@ -1,67 +1,75 @@
-from typing import Optional
-
-from starlette.requests import Request
-
 import jwt
+from typing import Optional
+from asyncpg import UniqueViolationError
+from fastapi.security import OAuth2PasswordBearer
+from passlib.context import CryptContext
+from starlette.requests import Request
 from datetime import datetime, timedelta
 from decouple import config
 from fastapi import HTTPException
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from db import database
-from models import RoleType, usuario
+from models import usuario
+
+bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+oauth2_bearer = OAuth2PasswordBearer(tokenUrl="token")
+
+
+def get_password_hash(password):
+    return bcrypt_context.hash(password)
+
+
+def verify_password(plain_password, hashed_password):
+    return bcrypt_context.verify(plain_password, hashed_password)
 
 
 class AuthManager:
-    """
-    Encode: Esta funcion codifica el token con una fecha de expiracion y el ID del usuario
-    """
+
     @staticmethod
-    def encode_token(user):
+    async def register(user_data):
+        user_data["password"] = get_password_hash(user_data["password"])
         try:
-            payload = {
-                "sub": user["id"],
-                "exp": datetime.utcnow() + timedelta(days=1)
-            }
-            return jwt.encode(payload, config("SECRET_KEY"), algorithm="HS256")
-        except Exception as ex:
-            raise ex
+            id_ = await database.execute(usuario.insert().values(**user_data))
+        except UniqueViolationError:
+            raise HTTPException(400, "Ya existe un usuario con este user_id")
+        user_do = await database.fetch_one(usuario.select().where(usuario.c.id == id_))
+        return AuthManager.create_access_token(user_do)
 
+    @staticmethod
+    def create_access_token(user, expires_delta: Optional[timedelta] = None):
+        username = user["user_id"]
+        user_id = user["id"]
+        role = user["role"]
+        encode = {"sub": username, "id": user_id, "role": role}
+        if expires_delta:
+            expire = datetime.utcnow() + expires_delta
+        else:
+            expire = datetime.utcnow() + timedelta(minutes=15)
+        encode.update({"exp": expire})
+        return jwt.encode(encode, config("SECRET_KEY"), algorithm="HS256")
 
-class CustomHHTPBearer(HTTPBearer):
-    async def __call__(
-            self, request: Request
-    ) -> Optional[HTTPAuthorizationCredentials]:
-        res = await super().__call__(request)
+    @staticmethod
+    async def authenticate_user(username: str, password: str):
+        user_do = await database.fetch_one(usuario.select().where(usuario.c.user_id == username))
+        if not user_do:
+            return False
+        if not verify_password(password, user_do["password"]):
+            return False
+        return user_do
 
+    @staticmethod
+    async def get_current_user(request:Request):
         try:
-            payload = jwt.decode(res.credentials, config("SECRET_KEY"), algorithms=["HS256"])
-            user_data = await database.fetch_one(usuario.select().where(usuario.c.id == payload["sub"]))
-            request.state.user = user_data
-            return user_data
-
-        except jwt.ExpiredSignatureError:
-            raise HTTPException(401, "El Token expiró ")
-        except jwt.InvalidTokenError:
-            raise HTTPException(401, "El Token es invalido")
-
-
-"""
-Instancia de la Clase CustomHHTPBearer()
-"""
-oauth2_scheme = CustomHHTPBearer()
-
-"""
-Funcion encargara de revisar si el (role) del usuario es master
-"""
-def is_master(request: Request):
-    if not request.state.user["role"] == RoleType.master:
-        raise HTTPException(403, "prohibido")
-
-
-"""
-Funcion encargara de revisar si el (role) del usuario es distribuidor
-"""
-def is_distribuidor(request: Request):
-    if not request.state.user["role"] == RoleType.distribuidor:
-        raise HTTPException(403, "Forbidden")
+            token = request.cookies.get("access_token")
+            if token is None:
+                return None
+            payload = jwt.decode(token, config("SECRET_KEY"), algorithms=["HS256"])
+            username: str = payload.get("sub")
+            user_id: int = payload.get("id")
+            role: str = payload.get("role")
+            if username is None or user_id is None:
+                return None
+            return {"username": username, "id": user_id, "role":role}
+        except (jwt.DecodeError, jwt.ExpiredSignatureError):
+            raise HTTPException(status_code=404, detail="Not found")

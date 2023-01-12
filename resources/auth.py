@@ -1,28 +1,54 @@
-from fastapi import APIRouter, Depends,Request
+from fastapi import APIRouter, Depends,Request, Response, HTTPException
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
-from managers.usuario import UserManager
-from schemas.request.usuario import UserLoginIn, UserRegisterIn
-from managers.auth import oauth2_scheme, is_master
+from starlette.responses import RedirectResponse
+from managers.auth import AuthManager
+from starlette import status
+from schemas.request.usuario import LoginForm, RegisterForm
+from fastapi.security import OAuth2PasswordRequestForm
+from datetime import timedelta
 
-router = APIRouter(tags=["Auth"])
+router = APIRouter(prefix="/auth",
+                   tags=["auth"],
+                   responses={401:{"user":"Not authorized"}}
+                   )
 
-"""
-Registra un usuario en la base de datos y retorna el token, solo puede ser ejecutada por usuarios master
-"""
-@router.post("/register/", status_code=201 , dependencies=[Depends(oauth2_scheme),Depends(is_master)])
-async def register(user_data: UserRegisterIn):
-    token = await UserManager.register(user_data.dict())
-    return {"token": token}
+templates = Jinja2Templates(directory="front/static/templates")
+
+@router.post("/register")
+async def register_user(response: Response, form_data: RegisterForm):
+    user = await AuthManager.register(form_data.dict())
+    return user
 
 
-@router.get("/login/")
-async def login(request:Request):
+@router.post("/token")
+async def login_for_access_token(response: Response, form_data: OAuth2PasswordRequestForm = Depends()):
+    user = await AuthManager.authenticate_user(form_data.username, form_data.password)
+    if not user:
+        return False
+    token_expires = timedelta(minutes=60)
+    token = AuthManager.create_access_token(user,expires_delta=token_expires)
+    response.set_cookie(key="access_token", value=token, httponly=True)
+    return True
+
+
+@router.get("/", response_class=HTMLResponse)
+async def authentication_page(request:Request):
     return templates.TemplateResponse("login.html",{"request":request})
-"""
-Da login al usuario y retorna el token para mantener al usuario en sesion
-"""
-@router.post("/login/", status_code=201)
-async def login(user_data: UserLoginIn):
-    token = await UserManager.login(user_data.dict())
-    return {"token": token}
+
+
+@router.post("/", response_class=HTMLResponse)
+async def login(request:Request):
+    try:
+        form = LoginForm(request)
+        await form.create_oauth_form()
+        response = RedirectResponse(url="/disponibilidad", status_code=status.HTTP_302_FOUND)
+
+        validate_user_cookie = await login_for_access_token(response=response, form_data=form)
+        if not validate_user_cookie:
+            msg = "Incorrect Username or Password"
+            return templates.TemplateResponse("login.html", {"request":request, "msg":msg})
+        return response
+    except HTTPException:
+        msg = "Unknown Error"
+        return templates.TemplateResponse("login.html", {"request":request, "msg":msg})
