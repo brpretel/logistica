@@ -29,6 +29,7 @@ async def login_for_access_token(response: Response, form_data: OAuth2PasswordRe
     token_expires = timedelta(minutes=60)
     token = AuthManager.create_access_token(user,expires_delta=token_expires)
     response.set_cookie(key="access_token", value=token, httponly=True)
+    print(token)
     return True
 
 

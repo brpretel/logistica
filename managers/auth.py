@@ -45,7 +45,7 @@ class AuthManager:
         if expires_delta:
             expire = datetime.utcnow() + expires_delta
         else:
-            expire = datetime.utcnow() + timedelta(minutes=15)
+            expire = datetime.utcnow() + timedelta(minutes=30)
         encode.update({"exp": expire})
         return jwt.encode(encode, config("SECRET_KEY"), algorithm="HS256")
 
@@ -59,7 +59,7 @@ class AuthManager:
         return user_do
 
     @staticmethod
-    async def get_current_user(request:Request):
+    async def get_current_user(request: Request):
         try:
             token = request.cookies.get("access_token")
             if token is None:
@@ -70,6 +70,6 @@ class AuthManager:
             role: str = payload.get("role")
             if username is None or user_id is None:
                 return None
-            return {"username": username, "id": user_id, "role":role}
+            return {"username": username, "id": user_id, "role": role}
         except (jwt.DecodeError, jwt.ExpiredSignatureError):
             raise HTTPException(status_code=404, detail="Not found")
