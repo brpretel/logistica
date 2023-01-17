@@ -26,10 +26,9 @@ async def login_for_access_token(response: Response, form_data: OAuth2PasswordRe
     user = await AuthManager.authenticate_user(form_data.username, form_data.password)
     if not user:
         return False
-    token_expires = timedelta(minutes=60)
+    token_expires = timedelta(minutes=120)
     token = AuthManager.create_access_token(user,expires_delta=token_expires)
     response.set_cookie(key="access_token", value=token, httponly=True)
-    print(token)
     return True
 
 
@@ -53,3 +52,10 @@ async def login(request:Request):
     except HTTPException:
         msg = "Unknown Error"
         return templates.TemplateResponse("login.html", {"request":request, "msg":msg})
+
+@router.get("/logout")
+async def logout(request: Request):
+    msg = "Logout Successful"
+    response = templates.TemplateResponse("login.html", {"request": request, "msg": msg})
+    response.delete_cookie(key="access_token")
+    return response

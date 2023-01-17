@@ -1,114 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en" dir="ltr">
+  <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="/front/static/logistica/css/layouts.css">
-    <title>Dashboard Mr.Specialties</title>
-</head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/logistica/css/layouts.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/logistica/css/dashboard.css') }}">
+    <!-- Boxicons CDN Link -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   </head>
 <body>
-      <header class="page-header">
-        <nav>
-          <a href="#0" aria-label="forecastr logo" class="logo">
-            <svg width="140" height="49">
-              <use xlink:href="#logo"></use>
-            </svg>
-          </a>
-          <button class="toggle-mob-menu" aria-expanded="false" aria-label="open menu">
-            <svg width="20" height="20" aria-hidden="true">
-              <use xlink:href="#down"></use>
-            </svg>
-          </button>
-          <ul class="admin-menu">
-            <li class="img">
-                <img src="/front/static/img/RECURSO-WEB_Mesa-de-trabajo-1.png" alt="Logo Mr.Specialties">
-              </li>
-            <li class="menu-heading">
-              <h3>Admin</h3>
-            </li>
-            <li>
-              <a href="#0">
-                <svg>
-                  <use xlink:href="#pages"></use>
-                </svg>
-                <span>Productos</span>
-              </a>
-            </li>
-            <li class="menu-heading">
-              <h3>Settings</h3>
-            </li>
-            <li>
-              <a href="#0">
-                <svg>
-                  <use xlink:href="#settings"></use>
-                </svg>
-                <span>Configuracion</span>
-              </a>
-            </li>
-            <li>
-              <a href="#0">
-                <svg>
-                  <use xlink:href="#options"></use>
-                </svg>
-                <span>Log-Out</span>
-              </a>
-            </li>
-            <li>
-              <div class="switch">
-                <input type="checkbox" id="mode" checked>
-                <label for="mode">
-                  <span></span>
-                  <span>Dark</span>
-                </label>
-              </div>
-              <button class="collapse-btn" aria-expanded="true" aria-label="collapse menu">
-                <svg aria-hidden="true">
-                  <use xlink:href="#collapse"></use>
-                </svg>
-                <span>Collapse</span>
-              </button>
-            </li>
-          </ul>
-        </nav>
-      </header>
-      <section class="page-content">
-        <section class="search-and-user">
-          <form>
-            <input type="search" placeholder="Search Pages...">
-            <button type="submit" aria-label="submit form">
-              <svg aria-hidden="true">
-                <use xlink:href="#search"></use>
-              </svg>
-            </button>
-          </form>
-          <div class="admin-profile">
-            <span class="greeting">Hola Distribuidores</span>
-            <div class="notifications">
-              <span class="badge">1</span>
-              <svg>
-                <use xlink:href="#users"></use>
-              </svg>
-            </div>
-          </div>
-        </section>
-        <section class="grid">
-          <article></article>
-          <article></article>
-          <article></article>
-          <article></article>
-          <article></article>
-          <article></article>
-          <article></article>
-          <article></article>
-        </section>
-        <footer class="page-footer">
-          <span>pretelsoftware </span>
-          <a href="https://georgemartsoukos.com/" target="_blank">
-            <img width="24" height="24" src="https://assets.codepen.io/162656/george-martsoukos-small-logo.svg" alt="George Martsoukos logo">
-          </a>
-        </footer>
-      </section>
+  <div class="sidebar">
+    <div class="logo-details">
+      <i class='bx bx-leaf icon'></i>
+        <div class="logo_name">Mr Specialties</div>
+        <i class='bx bx-menu' id="btn" ></i>
+    </div>
+    <ul class="nav-list">
+      <li>
+        <a href="#">
+          <i class='bx bx-grid-alt'></i>
+          <span class="links_name">Disponibilidades</span>
+        </a>
+         <span class="tooltip">Disponibilidades</span>
+      </li>
+     <li>
+       <a href="#">
+         <i class='bx bx-cog' ></i>
+         <span class="links_name">Setting</span>
+       </a>
+       <span class="tooltip">Setting</span>
+     </li>
+     <li class="profile">
+         <div class="profile-details">
+           <!--<img src="profile.jpg" alt="profileImg">-->
+           <div class="name_job">
+             <div class="name">{{user.username}}</div>
+             <div class="job">{{user.role}}</div>
+           </div>
+         </div>
+         <i class='bx bx-log-out' id="log_out" onclick="location.href='/auth/logout'" ></i>
+     </li>
+    </ul>
+  </div>
+  {% block content %}
 
+  {% endblock %}
+
+<script src="{{ url_for('static', path='/logistica/js/layout.js') }}"></script>
 </body>
 </html>

@@ -22,25 +22,16 @@ async def create_product(product_data: ProductosModel):
     return await MasterManager.create_product(product_data.dict())
 
 @router.post("/create_dia/")
-async def create_product(dia_data: DiasModel):
+async def create_dia(dia_data: DiasModel):
     return await MasterManager.create_dia(dia_data.dict())
 
 
-"""
-Retorna todas las disponibilidades en la base de datos, solo puede ser usada por usuarios master.
-"""
-@router.get("/all_disponibilidades/", response_model=List[DisponibilidadOut])
-async def get_all_disponibilidades(request: Request):
-    user = request.state.user
-    return await DisponibilidadManager.get_all_disponibilidades(user)
-
-
 @router.post("/dias_distribuidor/")
-async def create_dias_distribuidor(dia_data: Dias_DistribuidorModel):
+async def create_dias_for_distribuidor(dia_data: Dias_DistribuidorModel):
     return await MasterManager.create_dia_for_distribuidor(dia_data.dict())
 
 
 @router.post("/productos_distribuidor")
-async def post_product_user(product_data: Producos_DistribuidorModel):
+async def post_product_for_create_dias_for_distribuidor(product_data: Producos_DistribuidorModel):
     return await MasterManager.post_product_for_user(product_data.dict())
 

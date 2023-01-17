@@ -15,16 +15,6 @@
     <div class="login">
         <div class="form-container">
             <img src="/front/static/img/RECURSO-WEB_Mesa-de-trabajo-1.png" alt="logo" class="logo">
-            {%if msg %}
-            <div class="alert alert-success" role="alert">
-                {{msg}}
-            </div>
-            {%else%}
-            <div class="alert alert-danger" role="alert">
-                {{msg}}
-            </div>
-            {%endif%}
-
             <form method="POST" action="/auth">
                 <label class="label">Usuario</label>
                 <input type="text" name="user_id" placeholder="user_id" class="input input-password">

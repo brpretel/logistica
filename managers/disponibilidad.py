@@ -1,5 +1,7 @@
+import datetime
 from typing import Optional
 
+from datetime import datetime
 from db import database
 from models import disponibilidad, RoleType, disp_dias_de_distribuidor, dias, copia_disponibilidad, \
     disp_usuario_producto, producto,usuario
@@ -16,16 +18,24 @@ class DisponibilidadManager:
         if user["role"] == RoleType.master:
             q = disponibilidad.select()
         else:
-            q = copia_disponibilidad.select().where(copia_disponibilidad.c.creador_id == user["id"])
+            q1 = copia_disponibilidad.select().where(copia_disponibilidad.c.creador_id == user["id"])
             q2 = (
                 disp_dias_de_distribuidor.select()
                 .select_from(disp_dias_de_distribuidor.join(dias))
-                .where(usuario.c.user_id == distribuidor)
+                .where(usuario.c.id == user["id"])
                 .with_only_columns([dias.c.dia])
             )
-            disponibilidades = await database.fetch_all(q)
+            q3 = (
+                disp_usuario_producto.select()
+                .select_from(disp_usuario_producto.join(producto))
+                .where(usuario.c.id == user["id"])
+                .with_only_columns([producto.c.nombre])
+            )
+            disponibilidades = await database.fetch_all(q1)
             dias_disp = await database.fetch_all(q2)
-            return disponibilidades, dias_disp
+            current_date = datetime.now().date()
+            productos = await database.fetch_all(q3)
+            return disponibilidades, dias_disp, current_date,productos
         return await database.fetch_all(q)
 
     """
@@ -34,22 +44,22 @@ class DisponibilidadManager:
     """
 
     @staticmethod
-    async def get_data_for_distribuidor(user_id):
+    async def get_data_for_post_disponibiliad(user):
         q1 = (
-            disp_dias_de_distribuidor.select()
-            .select_from(disp_dias_de_distribuidor.join(dias))
-            .where(usuario.c.user_id == user_id)
-            .with_only_columns([dias.c.dia])
-        )
-        q2 = (
             disp_usuario_producto.select()
             .select_from(disp_usuario_producto.join(producto))
-            .where(usuario.c.user_id == user_id)
+            .where(usuario.c.id == user["id"])
             .with_only_columns([producto.c.nombre])
         )
-        disp_dias_de_distribuidores = await database.fetch_all(q1)
-        productos_de_distribuidor = await database.fetch_all(q2)
-        return disp_dias_de_distribuidores, productos_de_distribuidor
+        q2 = (
+            disp_dias_de_distribuidor.select()
+            .select_from(disp_dias_de_distribuidor.join(dias))
+            .where(usuario.c.id == user["id"])
+            .with_only_columns([dias.c.dia])
+        )
+        dias_disponibles = await database.fetch_all(q1)
+        productos_disponibles = await database.fetch_all(q2)
+        return dias_disponibles, productos_disponibles
 
     """
     create_disponibilidad: está funcion sirve para crear una disponibilidad

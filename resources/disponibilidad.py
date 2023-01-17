@@ -21,23 +21,25 @@ Retorna las disponibilidades, dias de disponibilidad y los productos que pertene
 @router.get("/", response_class=HTMLResponse)
 async def dashboard(request: Request):
     user = await AuthManager.get_current_user(request)
-    disponibilidad, dias = await DisponibilidadManager.get_all_disponibilidades(user, "n","test")
     if user is None:
         return RedirectResponse(url="/auth", status_code=status.HTTP_302_FOUND)
     elif user["role"] == RoleType.master:
-        return templates.TemplateResponse("layout_master.html", {"request": request, "disponibilidad": disponibilidad, "user":user, "dias":dias})
-    return templates.TemplateResponse("layout_distribuidor.html", {"request": request, "disponibilidad": disponibilidad, "user":user})
+        disponibilidad = await DisponibilidadManager.get_disponibilidades(user)
+        return templates.TemplateResponse("layout_master.html", {"request": request, "disponibilidad": disponibilidad, "user":user})
+    disponibilidad, dias, date, productos = await DisponibilidadManager.get_disponibilidades(user)
+    return templates.TemplateResponse("dashboard.html", {"request": request, "disponibilidad": disponibilidad, "user":user, "dias":dias, "date": date, "productos":productos})
 
 
 """
 Trae los productos y dias que estan disponibles para el usuario
 """
-@router.get("/disponibilidades/")
-async def get_data_for_distribuidor(user: dict = Depends(AuthManager.get_current_user)):
+@router.get("/crear/")
+async def get_data_for_post_disponibilidad(request:Request):
+    user = await AuthManager.get_current_user(request)
     if user is None:
-        print("Error")
-    disp_dias_de_distribuidores, productos_de_distribuidor = await DisponibilidadManager.get_data_for_distribuidor(user)
-    return {"disp_dias_de_distribuidores": disp_dias_de_distribuidores, "productos_de_distribuidor": productos_de_distribuidor}
+        return RedirectResponse(url="/auth", status_code=status.HTTP_302_FOUND)
+    dias_disponibles, productos_disponibles = await DisponibilidadManager.get_data_for_post_disponibiliad(user)
+    return {"dias_disponibles": dias_disponibles, "productos_disponibles": productos_disponibles}
 
 
 

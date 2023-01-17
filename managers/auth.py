@@ -3,10 +3,9 @@ from typing import Optional
 from asyncpg import UniqueViolationError
 from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
-from starlette.requests import Request
 from datetime import datetime, timedelta
 from decouple import config
-from fastapi import HTTPException
+from fastapi import HTTPException, Request
 
 from db import database
 from models import usuario
@@ -72,4 +71,7 @@ class AuthManager:
                 return None
             return {"username": username, "id": user_id, "role": role}
         except (jwt.DecodeError, jwt.ExpiredSignatureError):
-            raise HTTPException(status_code=404, detail="Not found")
+            return None
+
+
+
