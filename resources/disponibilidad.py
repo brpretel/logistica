@@ -1,5 +1,7 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 from starlette import status
+from datetime import datetime
+import pytz
 from starlette.requests import Request
 from starlette.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
@@ -24,10 +26,13 @@ async def dashboard(request: Request):
     if user is None:
         return RedirectResponse(url="/auth", status_code=status.HTTP_302_FOUND)
     elif user["role"] == RoleType.master:
-        disponibilidad = await DisponibilidadManager.get_disponibilidades(user)
-        return templates.TemplateResponse("layout_master.html", {"request": request, "disponibilidad": disponibilidad, "user":user})
+        colombia_tz = pytz.timezone('America/Bogota')
+        fecha = datetime.now(colombia_tz).date()
+
+        disponibilidad, usuarios, cantidad_usuarios_activos, cantidad_dispos, cant_productos = await DisponibilidadManager.get_disponibilidades(user)
+        return templates.TemplateResponse("dashboard_master.html", {"request": request, "disponibilidad": disponibilidad, "user":user, "usuarios": usuarios, "cantidad_usuarios_activos": cantidad_usuarios_activos, "cantidad_dispos": cantidad_dispos, "cant_productos": cant_productos, "fecha":fecha})
     disponibilidad, dias, date, productos = await DisponibilidadManager.get_disponibilidades(user)
-    return templates.TemplateResponse("dashboard.html", {"request": request, "disponibilidad": disponibilidad, "user":user, "dias":dias, "date": date, "productos":productos})
+    return templates.TemplateResponse("test.html", {"request": request, "disponibilidad": disponibilidad, "user":user, "dias":dias, "date": date, "productos":productos})
 
 
 """

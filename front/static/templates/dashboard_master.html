@@ -1,0 +1,112 @@
+{% include 'layout_master.html' %}
+
+
+
+<body>
+    <div class="d-flex" id="wrapper">
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid px-4">
+                <div class="row g-3 my-2">
+                    <div class="col-md-3">
+                        <div class="p-3 shadow-sm d-flex justify-content-around align-items-center rounded">
+                            <div>
+                                <h3 class="fs-2">{{cantidad_usuarios_activos}}</h3>
+                                <p class="fs-5">Usuarios</p>
+
+                            </div>
+                            <i class="fas fa-light fa-user fs-1 primary-text border rounded-full secondary-bg p-3"></i>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="p-3 shadow-sm d-flex justify-content-around align-items-center rounded">
+                            <div>
+                                <h3 class="fs-2">{{cantidad_dispos}}</h3>
+                                <p class="fs-5">Stock</p>
+                            </div>
+                            <i
+                                class="fas fa-thin fa-store fs-1 primary-text border rounded-full secondary-bg p-3"></i>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="p-3  shadow-sm d-flex justify-content-around align-items-center rounded">
+                            <div>
+                                <h3 class="fs-2">{{cant_productos}}</h3>
+                                <p class="fs-5">Products</p>
+                            </div>
+                            <i class="fas fa-solid fa-layer-group fs-1 primary-text border rounded-full secondary-bg p-3"></i>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="p-3  shadow-sm d-flex justify-content-around align-items-center rounded">
+                            <div>
+                                <h3 class="fs-2">{{fecha}}</h3>
+                                <p class="fs-5">Fecha</p>
+                            </div>
+                            <i class="fas fa-regular fa-calendar-check fs-1 primary-text border rounded-full secondary-bg p-3"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row my-5">
+                    <h3 class="fs-4 mb-3">Disponibilidades de la Semana</h3>
+                    <div class="col">
+                        <table class="table bg-white rounded shadow-sm  table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col" width="50">#</th>
+                                    <th scope="col">Producto</th>
+                                    <th scope="col">Categoria</th>
+                                    <th scope="col">Cantidad</th>
+                                    <th scope="col">Unidad</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Fecha de Disponibilidad</th>
+                                    <th scope="col">Dia de Disponibilidad</th>
+                                    <th scope="col">Creador</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for disp in disponibilidad%}
+                                <tr>
+                                    <th scope="row">{{loop.index}}</th>
+                                    <td>{{disp.producto}}</td>
+                                    <td>{{disp.categoria}}</td>
+                                    <td>{{disp.cantidad}}</td>
+                                    <td>{{disp.unidad}}</td>
+                                    <td>{{disp.status}}</td>
+                                    <td>{{disp.fecha_de_creacion}}</td>
+                                    <td>{{disp.dia_de_disponibilidad}}</td>
+                                    {% for user in usuarios%}
+                                    {% if disp.creador_id == user.id%}
+                                    <td>{{user.user_id}}</td>
+                                    {% endif %}
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- /#page-content-wrapper -->
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        var el = document.getElementById("wrapper");
+        var toggleButton = document.getElementById("menu-toggle");
+
+        toggleButton.onclick = function () {
+            el.classList.toggle("toggled");
+        };
+    </script>
+</body>
+
+</html>

@@ -1,51 +1,59 @@
 <!DOCTYPE html>
+
 <html lang="en" dir="ltr">
   <head>
+    <title>Mr Specialties User Dashboard</title>
     <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/logistica/css/layouts.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/logistica/css/dashboard.css') }}">
-    <!-- Boxicons CDN Link -->
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <!--<title> Drop Down Sidebar Menu </title>-->
+    <link rel="stylesheet" href="/front/static/logistica/css/layouts.css">
+    <link rel="stylesheet" href="/front/static/logistica/css/disponibilidades_distribuidor.css">
+    <!-- Boxiocns CDN Link -->
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   </head>
+  </head>
 <body>
-  <div class="sidebar">
+  <div class="sidebar close">
     <div class="logo-details">
-      <i class='bx bx-leaf icon'></i>
-        <div class="logo_name">Mr Specialties</div>
-        <i class='bx bx-menu' id="btn" ></i>
+      <i class='bx bxl-c-plus-plus'></i>
+      <span class="logo_name">Mr Specialties</span>
     </div>
-    <ul class="nav-list">
+    <ul class="nav-links">
       <li>
-        <a href="#">
-          <i class='bx bx-grid-alt'></i>
-          <span class="links_name">Disponibilidades</span>
-        </a>
-         <span class="tooltip">Disponibilidades</span>
+        <div class="iocn-link">
+          <a href="#">
+            <i class='bx bx-collection' ></i>
+            <span class="link_name">Disposición</span>
+          </a>
+          <i class='bx bxs-chevron-down arrow' ></i>
+        </div>
+        <ul class="sub-menu">
+          <li><a class="link_name" href="#">Disposición</a></li>
+          <li><a href="#">Agregar</a></li>
+          <li><a href="#">Actualizar</a></li>
+        </ul>
       </li>
-     <li>
-       <a href="#">
-         <i class='bx bx-cog' ></i>
-         <span class="links_name">Setting</span>
-       </a>
-       <span class="tooltip">Setting</span>
-     </li>
-     <li class="profile">
-         <div class="profile-details">
-           <!--<img src="profile.jpg" alt="profileImg">-->
-           <div class="name_job">
-             <div class="name">{{user.username}}</div>
-             <div class="job">{{user.role}}</div>
-           </div>
-         </div>
-         <i class='bx bx-log-out' id="log_out" onclick="location.href='/auth/logout'" ></i>
-     </li>
-    </ul>
+      <li>
+    <div class="profile-details">
+      <div class="profile-content">
+        <!--<img src="image/profile.jpg" alt="profileImg">-->
+      </div>
+      <div class="name-job">
+        <div class="profile_name">{{user.username}}</div>
+        <div class="job">{{user.role}}</div>
+      </div>
+      <a href="/auth/logout">
+        <i class='bx bx-log-out' ></i>
+      </a>
+    </div>
+  </li>
+</ul>
   </div>
-  {% block content %}
-
-  {% endblock %}
-
-<script src="{{ url_for('static', path='/logistica/js/layout.js') }}"></script>
+  <section class="home-section">
+    <div class="home-content">
+      <i class='bx bx-menu' ></i>
+      <span class="text">Menu</span>
+    </div>
+  </section>
+  <script src="{{ url_for('static', path='/logistica/js/layout.js') }}"></script>
 </body>
 </html>

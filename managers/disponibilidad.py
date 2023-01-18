@@ -2,6 +2,9 @@ import datetime
 from typing import Optional
 
 from datetime import datetime
+
+import sqlalchemy
+
 from db import database
 from models import disponibilidad, RoleType, disp_dias_de_distribuidor, dias, copia_disponibilidad, \
     disp_usuario_producto, producto,usuario
@@ -22,8 +25,9 @@ class DisponibilidadManager:
             q2 = (
                 disp_dias_de_distribuidor.select()
                 .select_from(disp_dias_de_distribuidor.join(dias))
-                .where(usuario.c.id == user["id"])
-                .with_only_columns([dias.c.dia])
+                .where(disp_dias_de_distribuidor.c.usuario == user["id"])
+                .with_only_columns([dias.c.dia, dias.c.fecha])
+                .order_by(sqlalchemy.asc(dias.c.fecha))
             )
             q3 = (
                 disp_usuario_producto.select()
