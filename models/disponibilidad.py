@@ -2,7 +2,6 @@ import sqlalchemy
 from models.enums import ProductMeasurement, ProductStatus, Dias_de_disponibilidad
 from db import metadata
 
-
 """
 disponibilidades: Es la tabla en donde se almacenaran los datos de las disponibilidades, relaciona el id del usuario 
 que la creo

@@ -30,8 +30,8 @@ class AuthManager:
         user_data["password"] = get_password_hash(user_data["password"])
         try:
             id_ = await database.execute(usuario.insert().values(**user_data))
-        except UniqueViolationError:
-            raise HTTPException(400, "Ya existe un usuario con este user_id")
+        except:
+            return None
         user_do = await database.fetch_one(usuario.select().where(usuario.c.id == id_))
         return AuthManager.create_access_token(user_do)
 
@@ -51,7 +51,7 @@ class AuthManager:
     @staticmethod
     async def authenticate_user(username: str, password: str):
         user_do = await database.fetch_one(usuario.select().where(usuario.c.user_id == username))
-        if not user_do:
+        if not user_do or user_do["status"] == "inactivo":
             return False
         if not verify_password(password, user_do["password"]):
             return False

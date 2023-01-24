@@ -1,0 +1,33 @@
+{% include 'layout_master.html' %}
+<body>
+
+<div id="page-content-wrapper">
+            <div class="container-fluid px-4">
+
+                <div class="row my-5">
+                    <h3 class="fs-4 mb-3">Productos</h3>
+                    <div class="col">
+                        <table class="table bg-white rounded shadow-sm  table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col" width="50">#</th>
+                                    <th>Nombre</th>
+                                    <th>Categoria</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for product in products%}
+                              <tr>
+                                  <td>{{loop.index}}</td>
+                                  <td>{{product.nombre}}</td>
+                                  <td>{{product.categoria}}</td>
+                              </tr>
+                              {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+</body>

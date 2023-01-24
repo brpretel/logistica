@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Mr Specialties Login</title>
+    <title>Mr Specialties</title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,6 +15,9 @@
     <div class="login">
         <div class="form-container">
             <img src="/front/static/img/RECURSO-WEB_Mesa-de-trabajo-1.png" alt="logo" class="logo">
+            {% if msg %}
+            <h4>{{msg}}</h4>
+            {% endif %}
             <form method="POST" action="/auth">
                 <label class="label">Usuario</label>
                 <input type="text" name="user_id" placeholder="user_id" class="input input-password">

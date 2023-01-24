@@ -37,7 +37,6 @@ class DisponibilidadManager:
             )
             disponibilidades = await database.fetch_all(q1)
             dias_disp = await database.fetch_all(q2)
-            current_date = datetime.now().date()
             productos = await database.fetch_all(q3)
             return disponibilidades, dias_disp, current_date,productos
         return await database.fetch_all(q)
@@ -52,17 +51,13 @@ class DisponibilidadManager:
         q1 = (
             disp_usuario_producto.select()
             .select_from(disp_usuario_producto.join(producto))
-            .where(usuario.c.id == user["id"])
-            .with_only_columns([producto.c.nombre])
+            .where(disp_usuario_producto.c.usuario == user["id"])
+            .with_only_columns([producto.c.nombre, producto.c.categoria])
         )
-        q2 = (
-            disp_dias_de_distribuidor.select()
-            .select_from(disp_dias_de_distribuidor.join(dias))
-            .where(usuario.c.id == user["id"])
-            .with_only_columns([dias.c.dia])
-        )
+
         dias_disponibles = await database.fetch_all(q1)
         productos_disponibles = await database.fetch_all(q2)
+
         return dias_disponibles, productos_disponibles
 
     """
@@ -71,9 +66,14 @@ class DisponibilidadManager:
 
     @staticmethod
     async def create_disponibilidad(disp_data, user):
+
+        fecha_query = sqlalchemy.select([dias.c.fecha]).where(dias.c.dia == disp_data["dia_de_disponibilidad"])
+        fecha = await database.fetch_val(fecha_query)
+        disp_data["fecha_de_disponibilidad"] = fecha
         disp_data["creador_id"] = user["id"]
         disp_data["modificador_id"] = user["id"]
         id_ = await database.execute(disponibilidad.insert().values(disp_data))
+
         return await database.fetch_one(disponibilidad.select().where(disponibilidad.c.id == id_))
 
     """

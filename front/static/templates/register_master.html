@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register Master</title>
+    <link href="/front/static/logistica/css/forms.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <br><br>
+    <br><br>
+    <div class="login">
+        <div class="form-container">
+            <img src="/front/static/img/RECURSO-WEB_Mesa-de-trabajo-1.png" alt="logo" class="logo">
+
+            <form action="/auth/register_master" method="post" class="form">
+                {% if msg %}
+                <h4>{{msg}}</h4>
+                {% endif %}
+                <h5>Crear Usuario</h5>
+
+                  <label for="name" class="label">Codigo:</label>
+                  <input type="text" id="name" name="codigo" minlength="3" class="input input-password" required>
+
+                  <label for="name" class="label">Usuario:</label>
+                  <input type="text" id="name" name="user_id" class="input input-password" required>
+
+                  <label for="password" class="label">Password:</label>
+                  <input type="password" name="password" placeholder="*********" class="input input-password" required>
+
+                  <label for="job" class="label" >Tipo de Usuario:</label>
+                  <select id="job" name="role" class="mi-select" required>
+                      <option value="master">Master</option>
+                  </select>
+
+                <button type="submit" class="primary-button login-buton">Crear Usuario</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,125 @@
+{% include 'layout_master.html' %}
+
+<body>
+    <div class="login">
+        <div class="box-grid">
+            <div class="grid-form-edit-user"> <!--Formulario para Modificar Usuario-->
+            <img src="/front/static/img/RECURSO-WEB_Mesa-de-trabajo-1.png" alt="logo" class="logo">
+
+            <form action="/master/edit_user" method="post" class="form">
+                <h5>Modificar Datos Para {{modify_user.user_id}}</h5>
+
+                  <select id="usuario" name="usuario" class="mi-select" required>
+                    <option value={{modify_user.user_id}}>{{modify_user.user_id}}</option>
+                  </select>
+
+                  <label for="job" class="label" >Tipo de Usuario:</label>
+                  <select id="job" name="role" class="mi-select" required>
+                      <option value="distribuidor">Distribuidor</option>
+                      <option value="master">Master</option>
+                  </select>
+                  <label for="status" class="label" >Estatus:</label>
+                  <select id="status" name="status" class="mi-select" required>
+                      <option value="activo">Activo</option>
+                      <option value="inactivo">Inactivo</option>
+                  </select>
+                <button type="submit" class="primary-button login-buton">Modificar Usuario</button>
+            </form>
+            </div>
+
+            <div class="grid-form-edit-user"><!--Formulario para Modificar Dia para Usuario-->
+                <img src="/front/static/img/RECURSO-WEB_Mesa-de-trabajo-1.png" alt="logo" class="logo">
+                <form action="/master/dias_distribuidor" method="post" class="form">
+                <h5>Agregar Dia Para {{modify_user.user_id}}</h5>
+
+                  <select id="usuario" name="usuario" class="mi-select" required>
+                    <option value={{modify_user.id}}>{{modify_user.user_id}}</option>
+                  </select>
+
+                  <label for="dia" class="label">Dias de la Semana:</label>
+                  <select id="dia" name="dia" class="mi-select" required>
+                      {% for dia in dias%}
+                      <option value={{dia.id}}>{{dia.dia}}</option>
+                      {% endfor %}
+                  </select>
+
+                <button type="submit" class="primary-button login-buton">Asignar Dia</button>
+            </form>
+            </div>
+
+            <div class="grid-form-edit-user"><!--Formulario para Modificar Producto para Usuario-->
+                <img src="/front/static/img/RECURSO-WEB_Mesa-de-trabajo-1.png" alt="logo" class="logo">
+                <form action="/master/assign_product" method="post" class="form">
+                <h5>Agregar Producto Para {{modify_user.user_id}}</h5>
+
+                    <select id="usuario" name="usuario" class="mi-select" required>
+                    <option value={{modify_user.id}}>{{modify_user.user_id}}</option>
+                  </select>
+
+                  <label for="password" class="label">Producto:</label>
+                  <select id="job" name="producto" class="mi-select" required>
+                      {% for producto in productos %}
+                      <option value={{producto.id}}>{{producto.nombre}} - {{producto.categoria}}</option>
+                      {% endfor %}
+                  </select>
+
+                <button type="submit" class="primary-button login-buton">Asignar Producto</button>
+            </form>
+            </div>
+        </div>
+    </div>
+<div id="page-content-wrapper">
+            <div class="container-fluid px-4">
+
+                <div class="row my-5">
+                    <h3 class="fs-4 mb-3">Productos de {{modify_user.user_id}}</h3>
+                    <div class="col">
+                        <table class="table bg-white rounded shadow-sm  table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col" width="50">#</th>
+                                    <th>Producto</th>
+                                    <th>Categoria</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for prod in produc_dist%}
+                              <tr>
+                                  <td>{{loop.index}}</td>
+                                  <td>{{prod.nombre}}</td>
+                                  <td>{{prod.categoria}}</td>
+                              </tr>
+                              {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+            <div class="container-fluid px-4">
+
+                <div class="row my-5">
+                    <h3 class="fs-4 mb-3">Dias de {{modify_user.user_id}}</h3>
+                    <div class="col">
+                        <table class="table bg-white rounded shadow-sm  table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col" width="50">#</th>
+                                    <th>Dia</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for date in dias_dis%}
+                              <tr>
+                                  <td>{{loop.index}}</td>
+                                  <td>{{date.dia}}</td>
+                              </tr>
+                              {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+</body>

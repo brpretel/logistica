@@ -1,0 +1,40 @@
+{% include 'layout_master.html' %}
+<body>
+
+<div id="page-content-wrapper">
+            <div class="container-fluid px-4">
+
+                <div class="row my-5">
+                    <h3 class="fs-4 mb-3">Usuarios</h3>
+                    <div class="col">
+                        <table class="table bg-white rounded shadow-sm  table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col" width="50">#</th>
+                                    <th>ID</th>
+                                    <th>User ID</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for user in users%}
+                              <tr>
+                                  <td>{{loop.index}}</td>
+                                  <td>{{user.user_id}}</td>
+                                  <td>{{user.role}}</td>
+                                  <td>{{user.status}}</td>
+                                  <td><button onclick="window.location.href='/master/edit_user/{{user.id}}/'"
+                                        type="button" class="btn btn-info">
+                                    Edit
+                                </button></td>
+                              </tr>
+                              {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+</body>

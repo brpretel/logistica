@@ -1,14 +1,8 @@
 from enum import Enum
 
-
-class ProductCategory(str, Enum):
-    organico = "organico"
-    inorganico = "inorganico"
-
-
 class ProductMeasurement(str, Enum):
-    kg = "kilo"
-    lb = "libra"
+    kg = "Kilo"
+    lb = "Libra"
 
 
 class ProductPackage(str, Enum):

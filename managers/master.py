@@ -1,3 +1,4 @@
+import sqlalchemy
 from fastapi import HTTPException
 from db import database
 from managers.auth import AuthManager
@@ -21,7 +22,10 @@ class MasterManager:
 
     @staticmethod
     async def create_product(product_data):
-        id_ = await database.execute(producto.insert().values(product_data))
+        try:
+            id_ = await database.execute(producto.insert().values(product_data))
+        except:
+            return None
         return await database.fetch_one(producto.select().where(producto.c.id == id_))
 
     @staticmethod
@@ -47,19 +51,68 @@ class MasterManager:
 
     @staticmethod
     async def create_dia_for_distribuidor(dia_data):
-        dupli = await database.fetch_one(
-            disp_dias_de_distribuidor.select().where(disp_dias_de_distribuidor.c.dia == dia_data["dia"])
-        )
-
         dia_exists = await database.fetch_one(
             dias.select().where(dias.c.id == dia_data["dia"])
         )
+
         user_exists = await database.fetch_one(
             usuario.select().where(usuario.c.id == dia_data["usuario"])
         )
-        if dia_exists and user_exists and not dupli:
+        if dia_exists and user_exists:
             id_ = await database.execute(disp_dias_de_distribuidor.insert().values(dia_data))
             return await database.fetch_one(
                 disp_dias_de_distribuidor.select().where(disp_dias_de_distribuidor.c.id == id_))
         else:
             return None
+
+    @staticmethod
+    async def get_all_users():
+        q1 = usuario.select()
+        users = await database.fetch_all(q1)
+        return users
+
+    @staticmethod
+    async def get_all_products():
+        q1 = producto.select()
+        productos = await database.fetch_all(q1)
+        return productos
+
+    @staticmethod
+    async def get_user_for_update(user_id):
+        q1 = usuario.select().where(usuario.c.id == user_id)
+        q2 = dias.select().where(~dias.c.id.in_(select([disp_dias_de_distribuidor.c.dia]).where(disp_dias_de_distribuidor.c.usuario == user_id))).order_by(sqlalchemy.asc(dias.c.fecha))
+        q3 = producto.select().where(~producto.c.id.in_(select([disp_usuario_producto.c.producto]).where(disp_usuario_producto.c.usuario == user_id)))
+        user = await database.fetch_one(q1)
+        dias_semana = await database.fetch_all(q2)
+        productos = await database.fetch_all(q3)
+        return user, dias_semana, productos
+
+    @staticmethod
+    async def update_user(user_data):
+        try:
+            query = update(usuario).where(usuario.c.user_id == user_data["user_id"]).values(role=user_data["role"],
+                                                                                            status=user_data["status"])
+            await database.execute(query)
+            return await database.fetch_one(usuario.select().where(usuario.c.user_id == user_data["user_id"]))
+        except Exception as e:
+            print("Error updating user: ", e)
+
+    @staticmethod
+    async def get_user_products_and_days(user_id):
+        days_query = (
+            select([dias.c.dia])
+            .select_from(disp_dias_de_distribuidor.join(dias))
+            .where(disp_dias_de_distribuidor.c.usuario == user_id)
+        )
+        days = await database.fetch_all(days_query)
+        products_query = (
+            select([producto.c.nombre, producto.c.categoria])
+            .select_from(disp_usuario_producto.join(producto))
+            .where(disp_usuario_producto.c.usuario == user_id)
+        )
+        products = await database.fetch_all(products_query)
+        return days, products
+
+
+
+
