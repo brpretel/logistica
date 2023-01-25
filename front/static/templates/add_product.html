@@ -1,0 +1,28 @@
+{% include 'layout_master.html' %}
+
+<body>
+
+    <div class="login">
+        <div class="form-container">
+            <img src="/front/static/img/RECURSO-WEB_Mesa-de-trabajo-1.png" alt="logo" class="logo">
+
+            <form action="/master/create_product/" method="post" class="form">
+                <h5>Crear Producto</h5>
+
+                <label for="producto" class="label">Producto</label>
+                <input name="nombre" type="text" id="producto" placeholder="Ingrese el nombre del producto" class="input input-password" required>
+
+                <label for="categorias" class="label">Selecciona una categoria:</label>
+                <select id="categorias" name="categoria" class="mi-select" required>
+                  <option value="organico">Orgánico</option>
+                  <option value="inorganico">Inorgánico</option>
+                </select>
+
+                <button type="submit" class="primary-button login-buton">Agregar Producto</button>
+
+                <a href="https://walink.co/7e3206">Si tiene problemas para registrar crear un producto, contacte con el Master</a>
+
+            </form>
+        </div>
+    </div>
+</body>

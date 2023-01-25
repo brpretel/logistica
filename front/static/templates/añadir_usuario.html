@@ -1,0 +1,29 @@
+{% include 'layout_master.html' %}
+
+<body>
+
+    <div class="login">
+        <div class="form-container">
+            <img src="/front/static/img/RECURSO-WEB_Mesa-de-trabajo-1.png" alt="logo" class="logo">
+
+            <form action="/master/register_user" method="post" class="form">
+                <h5>Crear Usuario</h5>
+
+                  <label for="name" class="label">Usuario:</label>
+                  <input type="text" id="name" name="user_id" class="input input-password" required>
+
+                  <label for="password" class="label">Password:</label>
+                  <input minlength="3" type="text" id="password" name="password" class="input input-password" required>
+
+                  <label for="job" class="label" >Tipo de Usuario:</label>
+                  <select id="job" name="role" class="mi-select" required>
+                      <option value="distribuidor">Distribuidor</option>
+                      <option value="master">Master</option>
+                  </select>
+
+                <button type="submit" class="primary-button login-buton">Crear Usuario</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
