@@ -5,7 +5,8 @@ from managers.auth import AuthManager
 from models import producto, dias, disp_dias_de_distribuidor, usuario,disp_usuario_producto
 from models.enums import RoleType
 from passlib.context import CryptContext
-from sqlalchemy import and_
+from sqlalchemy.sql import select, update
+
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
