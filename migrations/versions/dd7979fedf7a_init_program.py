@@ -1,8 +1,8 @@
-"""Init
+"""Init program
 
-Revision ID: 50016d57bae4
+Revision ID: dd7979fedf7a
 Revises: 
-Create Date: 2023-01-10 15:03:18.954694
+Create Date: 2023-01-24 21:06:13.829298
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '50016d57bae4'
+revision = 'dd7979fedf7a'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -21,13 +21,14 @@ def upgrade() -> None:
     op.create_table('dias',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('dia', sa.String(length=15), nullable=False),
+    sa.Column('fecha', sa.Date(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('dia')
     )
     op.create_table('productos',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('nombre', sa.String(length=60), nullable=False),
-    sa.Column('categoria', sa.Enum('organico', 'inorganico', name='productcategory'), nullable=False),
+    sa.Column('categoria', sa.String(length=60), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('nombre')
     )
@@ -103,76 +104,75 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(['disponibilidad_id'], ['disponibilidades.id'], ),
     sa.ForeignKeyConstraint(['modificador_id'], ['usuarios.id'], )
     )
-
     op.execute('''
-                        CREATE OR REPLACE FUNCTION log_function()
-                        RETURNS TRIGGER AS $$
-                        begin 
+                            CREATE OR REPLACE FUNCTION log_function()
+                            RETURNS TRIGGER AS $$
+                            begin 
 
-                        NEW.fecha_de_modificacion := (now() AT TIME ZONE 'America/Bogota');
+                            NEW.fecha_de_modificacion := (now() AT TIME ZONE 'America/Bogota');
 
 
-                        insert into "log_disponibilidades" values (old.producto, old.categoria, old.cantidad, old.unidad, old.status, old.fecha_de_creacion, new.fecha_de_modificacion, old.fecha_de_disponibilidad, old.dia_de_disponibilidad, old.modificador_id, old.id);
+                            insert into "log_disponibilidades" values (old.producto, old.categoria, old.cantidad, old.unidad, old.status, old.fecha_de_creacion, new.fecha_de_modificacion, old.fecha_de_disponibilidad, old.dia_de_disponibilidad, old.modificador_id, old.id);
 
-                        return new;
-                        end;
-                        $$
-                        LANGUAGE plpgsql;
-                        ''')
+                            return new;
+                            end;
+                            $$
+                            LANGUAGE plpgsql;
+                            ''')
     op.execute('''
-                            CREATE TRIGGER log_trigger
-                            BEFORE UPDATE ON disponibilidades
-                            FOR EACH ROW
-                            EXECUTE FUNCTION log_function();
-                            '''
+                                CREATE TRIGGER log_trigger
+                                BEFORE UPDATE ON disponibilidades
+                                FOR EACH ROW
+                                EXECUTE FUNCTION log_function();
+                                '''
                )
 
     op.execute('''
-                    CREATE OR REPLACE FUNCTION insert_into_copia()
-                    RETURNS TRIGGER AS $$
-                    BEGIN
-                        INSERT INTO copia_disponibilidades (id, producto, categoria, cantidad, unidad, status, fecha_de_creacion, fecha_de_modificacion, fecha_de_disponibilidad, dia_de_disponibilidad, creador_id) 
-                        VALUES (NEW.id, NEW.producto, NEW.categoria, NEW.cantidad, NEW.unidad, NEW.status, NEW.fecha_de_creacion, NEW.fecha_de_modificacion, NEW.fecha_de_disponibilidad, NEW.dia_de_disponibilidad, NEW.creador_id);
-                        RETURN NEW;
-                    END;
-                    $$
-                    LANGUAGE plpgsql;
-                    ''')
-    op.execute('''
-                        CREATE TRIGGER insert_into_copia_trigger
-                        BEFORE INSERT ON disponibilidades
-                        FOR EACH ROW
-                        EXECUTE FUNCTION insert_into_copia();
-                        '''
-               )
-
-    op.execute('''
-                        CREATE OR REPLACE FUNCTION update_into_copia()
+                        CREATE OR REPLACE FUNCTION insert_into_copia()
                         RETURNS TRIGGER AS $$
                         BEGIN
-                            UPDATE copia_disponibilidades
-                            SET producto = NEW.producto,
-                                categoria = NEW.categoria,
-                                cantidad = NEW.cantidad,
-                                unidad = NEW.unidad,
-                                status = NEW.status,
-                                fecha_de_creacion = NEW.fecha_de_creacion,
-                                fecha_de_modificacion = NEW.fecha_de_modificacion,
-                                fecha_de_disponibilidad = NEW.fecha_de_disponibilidad,
-                                dia_de_disponibilidad = NEW.dia_de_disponibilidad,
-                                creador_id = NEW.creador_id
-                            WHERE copia_disponibilidades.id = NEW.id;
+                            INSERT INTO copia_disponibilidades (id, producto, categoria, cantidad, unidad, status, fecha_de_creacion, fecha_de_modificacion, fecha_de_disponibilidad, dia_de_disponibilidad, creador_id) 
+                            VALUES (NEW.id, NEW.producto, NEW.categoria, NEW.cantidad, NEW.unidad, NEW.status, NEW.fecha_de_creacion, NEW.fecha_de_modificacion, NEW.fecha_de_disponibilidad, NEW.dia_de_disponibilidad, NEW.creador_id);
                             RETURN NEW;
                         END;
                         $$
                         LANGUAGE plpgsql;
                         ''')
     op.execute('''
-                            CREATE TRIGGER update_into_copia_trigger
-                            AFTER UPDATE ON disponibilidades
+                            CREATE TRIGGER insert_into_copia_trigger
+                            BEFORE INSERT ON disponibilidades
                             FOR EACH ROW
-                            EXECUTE FUNCTION update_into_copia();
+                            EXECUTE FUNCTION insert_into_copia();
                             '''
+               )
+
+    op.execute('''
+                            CREATE OR REPLACE FUNCTION update_into_copia()
+                            RETURNS TRIGGER AS $$
+                            BEGIN
+                                UPDATE copia_disponibilidades
+                                SET producto = NEW.producto,
+                                    categoria = NEW.categoria,
+                                    cantidad = NEW.cantidad,
+                                    unidad = NEW.unidad,
+                                    status = NEW.status,
+                                    fecha_de_creacion = NEW.fecha_de_creacion,
+                                    fecha_de_modificacion = NEW.fecha_de_modificacion,
+                                    fecha_de_disponibilidad = NEW.fecha_de_disponibilidad,
+                                    dia_de_disponibilidad = NEW.dia_de_disponibilidad,
+                                    creador_id = NEW.creador_id
+                                WHERE copia_disponibilidades.id = NEW.id;
+                                RETURN NEW;
+                            END;
+                            $$
+                            LANGUAGE plpgsql;
+                            ''')
+    op.execute('''
+                                CREATE TRIGGER update_into_copia_trigger
+                                AFTER UPDATE ON disponibilidades
+                                FOR EACH ROW
+                                EXECUTE FUNCTION update_into_copia();
+                                '''
                )
     # ### end Alembic commands ###
 
