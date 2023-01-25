@@ -12,6 +12,11 @@
 </head>
 
 <body>
+    <div class="user-master">
+        <a href="/auth/register_master">
+            <img src="/front/static/img/svgviewer-output.svg" alt="usermaster" class="usermaster">
+        </a>
+    </div>
     <div class="login">
         <div class="form-container">
             <img src="/front/static/img/RECURSO-WEB_Mesa-de-trabajo-1.png" alt="logo" class="logo">
@@ -19,11 +24,10 @@
             <h4>{{msg}}</h4>
             {% endif %}
             <form method="POST" action="/auth">
-                <label class="label">Usuario</label>
-                <input type="text" name="user_id" placeholder="user_id" class="input input-password">
-
+                <label class="label">Usuario</label> &nbsp&nbsp&nbsp&nbsp
+                <input type="text" name="user_id" placeholder="user_id" class="input input-password" required>
                 <label class="label">Contraseña</label>
-                <input type="password" name="password" placeholder="*********" class="input input-password">
+                <input type="password" name="password" placeholder="*********" class="input input-password" required>
 
                 <button type="submit" class="primary-button login-buton" >Login</button>
 
